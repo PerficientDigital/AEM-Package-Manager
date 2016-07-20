@@ -39,17 +39,9 @@ function help
 
 list ()
 {
-	mkdir -p /tmp/aem-pkmgr
-	rm -f /tmp/aem-pkmgr/list.json
-	curl -u $USER:$PASSWORD -s --fail "$HOST/crx/packmgr/list.jsp" -o /tmp/aem-pkmgr/list.json
-	if [ -e /tmp/aem-pkmgr/list.json ]; then
-		echo "AVAILABLE PACKAGES"
-		echo ""
-		ruby -rjson -e 'group = ARGV[0].downcase; name = ARGV[1].downcase; j = JSON.parse(File.read("/tmp/aem-pkmgr/list.json"));j["results"].each do |package|  if (package["name"].downcase.include? name) and (package["group"].downcase.include? group) then  print package["name"]+"\n";  print "\tDescription: "+(package["description"] == nil ? "" : package["description"])+"\n";  print "\tVersion: "+(package["version"] == nil ? "" : package["version"])+"\n";  print "\tGroup: "+(package["group"] == nil ? "" : package["group"])+"\n";  print "\tPath: "+(package["path"] == nil ? "" : package["path"])+"\n\n"; end end' "$GROUP" "$NAME"
-	else 
-		echo "Unable to list packages! Is AEM available?"
-		exit 1
-	fi
+	echo "AVAILABLE PACKAGES:"
+	echo ""
+	ruby -ruri -rjson -rnet/http -e 'uri = URI.parse(ARGV[2]+"/crx/packmgr/list.jsp"); request = Net::HTTP::Get.new(uri); request.basic_auth(ARGV[3],ARGV[4]); response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|   http.request(request);  end;  group = ARGV[0].downcase;  name = ARGV[1].downcase;  j = JSON.parse(response.body);  j["results"].each do |package|  if (package["name"].downcase.include? name) and (package["group"].downcase.include? group) then   print package["name"]+"\n";   print "\tDescription: "+(package["description"] == nil ? "" : package["description"])+"\n";   print "\tVersion: "+(package["version"] == nil ? "" : package["version"])+"\n";   print "\tGroup: "+(package["group"] == nil ? "" : package["group"])+"\n";   print "\tPath: "+(package["path"] == nil ? "" : package["path"])+"\n\n";  end end ' "$GROUP" "$NAME" "$HOST" "$USER" "$PASSWORD"
 }
 
 install_package ()
