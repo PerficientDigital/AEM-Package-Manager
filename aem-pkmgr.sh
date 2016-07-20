@@ -23,6 +23,7 @@ function help
 	echo " list            - lists all available packages"
 	echo " install         - installs a package"
 	echo " upload          - uploads a package"
+	echo " upload-install  - uploads and installs a package"
 	echo " build           - builds a package"
 	echo " download        - downloads a package"
 	echo ""
@@ -54,6 +55,18 @@ install_package ()
 	echo "INSTALLING PACKAGE $PACKAGE..."
 	encoded_package=${PACKAGE// /%20}
 	curl -u $USER:$PASSWORD -X POST --fail "$HOST/crx/packmgr/service/.json$encoded_package?cmd=install"
+	echo ""
+}
+
+upload_install ()
+{
+	if [ "$PACKAGE" == "0" ]; then
+		echo "Missing package!"
+		echo "usage: aem-pkmgr upload -pk [package-file]"
+		exit 1
+	fi
+	echo "UPLOADING PACKAGE $PACKAGE..."
+	curl -u $USER:$PASSWORD --fail -F file=@"$PACKAGE" -F force=true -F install=true $HOST/crx/packmgr/service.jsp
 	echo ""
 }
 
@@ -132,6 +145,8 @@ while [ "$1" != "" ]; do
 								;;
 		"install" )				ACTION="install"
 								;;
+		"upload-install" )		ACTION="upload-install"
+								;;
 		upload )				ACTION="upload"
 								;;
 		download )				ACTION="download"
@@ -147,6 +162,8 @@ if [ "$ACTION" = "list" ]; then
 	list
 elif [ "$ACTION" = "install" ] ; then
 	install_package
+elif [ "$ACTION" = "upload-install" ] ; then
+	upload_install
 elif [ "$ACTION" = "upload" ] ; then
 	upload
 elif [ "$ACTION" = "download" ] ; then
