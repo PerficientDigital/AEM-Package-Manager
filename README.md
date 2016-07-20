@@ -16,13 +16,14 @@ Download the script, make it executable and put it into the path on your compute
 
 ## Usage
 
-`aem-pkmgr [list|install|download|upload|build] [-h http://localhost:4503] [-u admin1] [-p admin2] [-pk package.zip]`
+`aem-pkmgr [list|install|download|upload|upload-install|build] [-h http://localhost:4503] [-u admin1] [-p admin2] [-pk package.zip]`
 
 ### Actions
 
  * list            - lists all available packages
  * install         - installs a package
  * upload          - uploads a package
+ * upload-install  - uploads and installs a package
  * build           - builds a package
  * download        - downloads a package
 
