@@ -12,7 +12,7 @@ NAME=""
 
 function usage
 {
-	echo "usage: aem-pkmgr [list|install|download|upload|build] [-h http://localhost:4503] [-u admin1] [-p admin2] [-pk package.zip]"
+	echo "usage: aem-pkmgr [list|install|download|upload|upload-install|build] [-h http://localhost:4503] [-u admin1] [-p admin2] [-pk package.zip]"
 }
 
 function help
